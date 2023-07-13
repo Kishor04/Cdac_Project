@@ -1,0 +1,24 @@
+version: 0.2
+env:
+  parameter-store:
+    Site: Siteid
+    BurpServer: Burpsvurl
+    apikey: apikey
+phases: 
+  install:
+    runtime-versions:
+      java: corretto17
+    #commands:
+       #- apt-get install default-jdk -y
+  pre_build:
+     commands:
+        - cp ./burp-ci-driver-2021.3-162.jar /root/burp/  
+  build:
+    commands:
+        #- chmod 777 burp-ci-driver-2021.3-162.jar
+        - java -jar /root/burp/burp-ci-driver-2021.3-162.jar $BurpServer --api-key=$apikey --site-id=$Site --min-severity=high --min-confidence=certain --report-file=app-scan-report.html --report-type=detailed
+artifacts:
+  files:
+    - '**/*'
+  name: myname-$(date +%Y-%m-%d)
+  
